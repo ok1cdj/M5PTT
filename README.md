@@ -7,9 +7,31 @@ as a wireless/wired PTT.
 
 ## How it works
 
-- **PTT press** → `Note On` (note 99, velocity 127, channel 1)
-- **PTT release** → `Note Off` (note 99, channel 1)
-- The device presents as `M5PTT` over both BLE and USB.
+Two operating modes, selected at boot:
+
+- **Voice mode** (default): the footswitch or built-in button is push-to-talk.
+- **CW mode**: hold the built-in button while powering on — the LED flashes
+  **R** (·−·) to confirm. The built-in button then triggers CWX keyer memories
+  by click count (footswitch is ignored).
+
+Power-cycle **without** holding the button to return to voice mode.
+
+The device presents as `M5PTT` over both BLE and USB.
+
+### MIDI notes (channel 1)
+
+All actions are momentary note pulses; map them in SmartSDR's Mapping Editor.
+
+| Action | Note | Map to |
+|---|---|---|
+| Voice PTT | 99 | PTT (Note On press / Note Off release) |
+| CW single click | 100 | CWX macro 1 |
+| CW double click | 101 | CWX macro 2 |
+| CW triple click | 102 | CWX macro 3 |
+| CW long press | 103 | CWX stop / abort |
+
+Single-click resolves after a ~350 ms window (needed to distinguish double/triple
+click); a long press (~600 ms) fires the abort note.
 
 ### Transport selection (automatic, mutually exclusive)
 
@@ -46,8 +68,11 @@ Both inputs are debounced (50 ms).
 |---|---|
 | Red | PTT active |
 | Green | USB host connected (USB MIDI active), idle |
-| Solid blue | BLE connected, idle |
-| Slow blue blink | Advertising / not connected |
+| Solid blue / blue blink | Voice mode: BLE connected / advertising |
+| Solid magenta / magenta blink | CW mode: BLE connected / advertising |
+| Morse "R" at boot | CW mode confirmed |
+| N white blinks | CW memory N sent (1/2/3) |
+| Long red blink | CW abort sent |
 
 ## Building & flashing
 
