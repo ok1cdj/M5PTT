@@ -17,7 +17,8 @@ The mode is **remembered across power cycles** (stored in flash). Hold the
 built-in button while powering on to **toggle** between voice and CW; the new
 mode is saved and used on subsequent boots until you toggle again.
 
-The device presents as `M5PTT` over both BLE and USB.
+The device presents as `M5PTT` over USB and as `M5PTT_XXXX` over BLE (the
+`XXXX` suffix is the last two bytes of the BLE MAC, so each unit is unique).
 
 ### MIDI notes (channel 1)
 
@@ -102,9 +103,11 @@ board in download mode manually:
 - **USB mode:** the AtomS3 board defaults to `ARDUINO_USB_MODE=1` (hardware
   USB-Serial/JTAG); this project forces `=0` (OTG/TinyUSB) in `platformio.ini`
   so it can enumerate as a USB MIDI device.
-- **BLE name:** the BLE-MIDI library advertises only the service UUID, so the
-  device name is injected into the advertisement/scan response manually —
-  otherwise iOS shows the peripheral UUID instead of `M5PTT`.
+- **BLE advertising:** built explicitly — the 128-bit MIDI service UUID in the
+  primary packet (so iOS recognizes it as MIDI) and the unique `M5PTT_XXXX` name
+  in the scan response (it won't fit alongside the 128-bit UUID in one packet).
+  No BLE *appearance* is advertised: `0x03C0` is the HID appearance, which made
+  SmartSDR misclassify the device (stuck at "waiting for controller").
 - **BLE connection state:** the BLE-MIDI library's connect callbacks don't fire
   under NimBLE-Arduino 2.x (changed virtual signature), so connection state is
   polled via `getConnectedCount()`.

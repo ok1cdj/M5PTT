@@ -270,10 +270,33 @@ void setup() {
     MIDI.begin(MIDI_CHANNEL_OMNI);
     NimBLEDevice::setPower(ESP_PWR_LVL_N12);  // -12 dBm, adequate for tabletop
 
+    // Build a unique name "M5PTT_XXXX" from the last two bytes of the BLE MAC
+    // (mirrors the CTR2 naming scheme) so it can't collide with other/older
+    // devices of the same base name in the host's device list.
+    String mac = NimBLEDevice::getAddress().toString().c_str();  // "aa:bb:..:ee:ff"
+    mac.replace(":", "");
+    mac.toUpperCase();
+    String devName = "M5PTT_" + mac.substring(mac.length() - 4);  // last 2 bytes
+    NimBLEDevice::setDeviceName(devName.c_str());                 // GAP name
+    Serial.printf("BLE device name: %s\n", devName.c_str());
+
+    // Advertise explicitly: the 128-bit MIDI service UUID goes in the primary
+    // packet (so iOS/CoreMIDI recognizes it as a MIDI peripheral), and the name
+    // goes in the scan response (it won't fit alongside the 128-bit UUID in one
+    // 31-byte packet). Do NOT advertise an appearance: 0x03C0 is actually the
+    // HID appearance, which makes hosts (incl. SmartSDR) misclassify the device.
     NimBLEAdvertising* adv = NimBLEDevice::getAdvertising();
     adv->stop();
-    adv->setName("M5PTT");
-    adv->setAppearance(0x03C0);  // Generic MIDI Device
+
+    NimBLEAdvertisementData advData;
+    advData.setFlags(0x06);  // LE General Discoverable, BR/EDR not supported
+    advData.setCompleteServices(NimBLEUUID("03B80E5A-EDE8-4B33-A751-6CE34EC4C700"));
+
+    NimBLEAdvertisementData scanData;
+    scanData.setName(devName.c_str());
+
+    adv->setAdvertisementData(advData);
+    adv->setScanResponseData(scanData);
     adv->enableScanResponse(true);
     adv->start();
 
