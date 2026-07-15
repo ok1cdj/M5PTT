@@ -3,8 +3,6 @@
 #include <hardware/BLEMIDI_ESP32_NimBLE.h>
 #include <MIDI.h>
 #include <FastLED.h>
-#include <WiFi.h>
-#include <esp_wifi.h>
 
 // BLE MIDI — macro creates BLEMIDI (transport) and MIDI (BLE MIDI interface)
 BLEMIDI_CREATE_INSTANCE("M5PTT", MIDI)
@@ -91,9 +89,8 @@ void OnDisconnected() {
 // ---- setup / loop ----
 
 void setup() {
-    WiFi.disconnect(true);
-    WiFi.mode(WIFI_OFF);
-    esp_wifi_stop();
+    // WiFi is never initialized (we never call WiFi.begin), so its radio stays
+    // off and draws no power — no explicit disable needed on ESP32-S3.
 
     Serial.begin(115200);
 
