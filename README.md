@@ -10,11 +10,12 @@ as a wireless/wired PTT.
 Two operating modes, selected at boot:
 
 - **Voice mode** (default): the footswitch or built-in button is push-to-talk.
-- **CW mode**: hold the built-in button while powering on — the LED flashes
-  **R** (·−·) to confirm. The built-in button then triggers CWX keyer memories
-  by click count (footswitch is ignored).
+- **CW mode**: the built-in button triggers CWX keyer memories by click count
+  (footswitch is ignored). Booting into CW mode flashes **R** (·−·) to confirm.
 
-Power-cycle **without** holding the button to return to voice mode.
+The mode is **remembered across power cycles** (stored in flash). Hold the
+built-in button while powering on to **toggle** between voice and CW; the new
+mode is saved and used on subsequent boots until you toggle again.
 
 The device presents as `M5PTT` over both BLE and USB.
 

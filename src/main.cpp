@@ -3,6 +3,7 @@
 #include <hardware/BLEMIDI_ESP32_NimBLE.h>
 #include <MIDI.h>
 #include <FastLED.h>
+#include <Preferences.h>
 
 // BLE MIDI — macro creates BLEMIDI (transport) and MIDI (BLE MIDI interface)
 BLEMIDI_CREATE_INSTANCE("M5PTT", MIDI)
@@ -49,7 +50,9 @@ bool pttActive    = false;
 bool bleConnected = false;
 bool usbActive    = false;  // true once a USB host has enumerated us; USB then
                             // becomes the sole MIDI transport and BLE is shut down
-bool cwMode       = false;  // chosen at boot by holding the button; CW keyer mode
+bool cwMode       = false;  // CW keyer mode; persisted in NVS, toggled at boot
+
+Preferences prefs;          // NVS store for the persisted operating mode
 
 // ---- LED ----
 
@@ -278,14 +281,26 @@ void setup() {
     FastLED.addLeds<WS2812, LED_PIN, GRB>(leds, NUM_LEDS);
     FastLED.setBrightness(30);
 
-    // Mode select: holding the built-in button during boot enters CW mode.
+    // Mode select: the mode is persisted in NVS and resumed at boot. Holding
+    // the built-in button during boot toggles to the other mode and saves it.
     // (Button was set to INPUT_PULLUP at the very top of setup so it reads here.)
-    cwMode = (digitalRead(BUTTON_PIN) == LOW);
-    if (cwMode) {
-        flashMorseR();                 // confirm CW mode with "R" (.-.)
-        // The button is still held here. Seed the debounce state as "pressed"
-        // and mark this press consumed so releasing it after boot is neither
-        // counted as a click nor fires the long-press abort.
+    bool held = (digitalRead(BUTTON_PIN) == LOW);
+    prefs.begin("m5ptt", false);
+    bool saved = prefs.getBool("cwmode", false);
+    if (held) {
+        cwMode = !saved;
+        prefs.putBool("cwmode", cwMode);   // persist the toggle
+    } else {
+        cwMode = saved;                    // resume last mode
+    }
+    prefs.end();
+
+    if (cwMode) flashMorseR();             // confirm CW mode with "R" (.-.)
+
+    if (held) {
+        // Button still held: seed the debounce state as "pressed" and mark this
+        // press consumed so its release after boot is neither counted as a CW
+        // click nor triggers PTT.
         btnState = LOW; btnLastRaw = LOW;
         cwPressConsumed = true;
     }
