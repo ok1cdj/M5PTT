@@ -8,6 +8,10 @@ Press a footswitch or the small top button to key your transmitter. The device
 talks to SmartSDR over **Bluetooth LE** (cable-free) or **USB** — it picks the
 right one for you automatically.
 
+<p align="center">
+  <img src="img/atom3lite.webp" alt="M5Stack AtomS3 Lite — the top button and USB-C port" width="320">
+</p>
+
 ---
 
 ## 1. What's in the box / on the device

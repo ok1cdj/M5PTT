@@ -5,6 +5,12 @@ Pressing a footswitch or the built-in button sends a MIDI note over either
 Bluetooth LE MIDI or native USB MIDI. Designed for use with **SmartSDR on iOS**
 as a wireless/wired PTT.
 
+<p align="center">
+  <img src="img/atom3lite.webp" alt="M5Stack AtomS3 Lite" width="320">
+</p>
+
+> 📖 Operating the device? See the **[User Manual](USER_MANUAL.md)**.
+
 ## How it works
 
 Two operating modes, selected at boot:
