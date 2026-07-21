@@ -44,6 +44,31 @@ Bluetooth on its own.
 > pack** — *not* a computer. From a computer it stays in USB mode with
 > Bluetooth off.
 
+### Cable-free option: Atomic Battery Base
+
+For fully untethered operation, stack the device onto an **M5Stack Atomic
+Battery Base (200 mAh)** — it fits the Atom form factor and plugs onto the
+bottom of the unit, giving you a self-contained wireless footswitch with no
+cables at all.
+
+- **Battery:** 3.7 V, 200 mAh built-in LiPo.
+- **On/off:** a dip switch on the base selects **discharge** (powers the device
+  from the battery — this is the wireless mode you want in use) or **charge**
+  (recharge the battery through the device's USB-C port from any charger). The
+  two modes can't run at the same time, so flip the switch to *charge* when
+  topping up and back to *discharge* to operate.
+- **Indicators (on the base):** a four-segment red gauge shows remaining
+  charge; a separate LED is **blue while charging** and **green when full**.
+- **Behaviour:** because the base delivers power only (no data host), the
+  device runs on **Bluetooth LE** — exactly like using a plain charger, so
+  pairing and mapping work the same way (§7).
+
+> Product page:
+> <https://shop.m5stack.com/products/atomic-battery-base-200mah>
+>
+> Note: at 200 mAh this is a small battery sized for short, portable sessions.
+> For long operating periods, power from a larger USB power bank instead.
+
 ---
 
 ## 3. Two operating modes
@@ -187,8 +212,9 @@ so you're not left keyed up.
 
 ```
 POWER
-  Charger / battery  → wireless (Bluetooth)   LED blue/magenta
-  Computer / iPad    → wired (USB)            LED green
+  Charger / power bank      → wireless (Bluetooth)  LED blue/magenta
+  Atomic Battery Base       → wireless (Bluetooth), no cables
+  Computer / iPad           → wired (USB)           LED green
 
 MODE (chosen at power-on, remembered)
   Just power on          → last used mode
