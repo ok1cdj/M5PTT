@@ -131,4 +131,4 @@ keeping the LED dim.
 
 ## License
 
-Apache 2.0 — see [LICENSE](LICENSE).
+MIT — see [LICENSE](LICENSE).
