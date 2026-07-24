@@ -9,6 +9,10 @@ as a wireless/wired PTT.
   <img src="img/atom3lite.webp" alt="M5Stack AtomS3 Lite" width="320">
 </p>
 
+> ⚡ Just want to install it? Flash the latest firmware from your browser at
+> **[m5ptt.ok1cdj.com](https://m5ptt.ok1cdj.com)** — no IDE, no drivers. See
+> [Flash from your browser](#flash-from-your-browser-recommended).
+>
 > 📖 Operating the device? See the **[User Manual](USER_MANUAL.md)**.
 
 ## How it works
@@ -83,6 +87,25 @@ Both inputs are debounced (50 ms).
 | Long red blink | CW abort sent |
 
 ## Building & flashing
+
+### Flash from your browser (recommended)
+
+The easiest way, no toolchain required. Open
+**[m5ptt.ok1cdj.com](https://m5ptt.ok1cdj.com)** in Chrome, Edge, or Brave on a
+desktop — Web Serial isn't available in Safari or on iOS/iPadOS — then:
+
+1. Unplug the AtomS3 Lite.
+2. Press and hold the top button, plug in a USB-C **data** cable while holding,
+   and keep holding for ~2 s after it powers up. This enters download mode; the
+   board has no auto-reset circuit, so it's needed every time you flash.
+3. Click **Connect device**, pick the matching serial port, then release the
+   button.
+4. Wait for the flash to finish — that's it.
+
+The page always serves the latest released firmware and shows its version next
+to the install button.
+
+### Build from source
 
 Requires [PlatformIO](https://platformio.org/).
 
