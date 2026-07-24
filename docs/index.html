@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Install M5PTT firmware</title>
+<meta name="description" content="Flash M5PTT firmware to an M5Stack AtomS3 Lite directly from your browser.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0c1016;
+    --panel:#131a23;
+    --hairline:#232c3a;
+    --brass:#c98a3c;
+    --brass-bright:#e2a457;
+    --cyan:#5fd0c9;
+    --text:#eef2f5;
+    --text-muted:#8793a1;
+    --danger:#d9614f;
+    --radius:10px;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;background:var(--ink);}
+  body{
+    font-family:'Inter',system-ui,-apple-system,sans-serif;
+    color:var(--text);
+    padding:40px 20px 64px;
+    max-width:880px;
+    margin-inline:auto;
+    line-height:1.5;
+  }
+  a{color:var(--cyan);}
+  a:focus-visible, button:focus-visible{outline:2px solid var(--cyan);outline-offset:3px;}
+  h1,h2{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:600;letter-spacing:-0.01em;margin:0;}
+
+  .eyebrow{
+    font-family:'IBM Plex Mono',monospace;text-transform:uppercase;
+    letter-spacing:.14em;font-size:12px;color:var(--text-muted);margin:0 0 12px;
+  }
+  .hero h1{font-size:clamp(28px,5vw,40px);margin:0 0 14px;}
+  .lede{color:var(--text-muted);font-size:16px;max-width:58ch;margin:0 0 24px;}
+  .badges{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px;}
+  .badge{
+    font-family:'IBM Plex Mono',monospace;font-size:12px;padding:5px 10px;
+    border:1px solid var(--hairline);border-radius:999px;color:var(--text-muted);
+  }
+
+  .morse-wrap{display:flex;justify-content:center;margin:30px 0 6px;}
+  .morse-wrap svg{width:min(480px,92%);height:auto;filter:drop-shadow(0 0 6px rgba(201,138,60,.45));}
+  .morse-caption{
+    text-align:center;font-family:'IBM Plex Mono',monospace;font-size:11px;
+    color:var(--text-muted);letter-spacing:.12em;margin:8px 0 36px;
+  }
+
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:18px;}
+  @media (max-width:720px){ .grid{grid-template-columns:1fr;} }
+
+  .panel{
+    background:var(--panel);border:1px solid var(--hairline);
+    border-radius:var(--radius);padding:24px 26px;
+  }
+  .panel h2{
+    font-size:13px;margin:0 0 16px;color:var(--text-muted);
+    text-transform:uppercase;letter-spacing:.1em;
+  }
+
+  .checklist ul{margin:0;padding-left:18px;color:var(--text-muted);font-size:14px;}
+  .checklist li{margin-bottom:12px;}
+  .checklist strong{color:var(--text);}
+
+  .install{display:flex;flex-direction:column;}
+  .install-btn{
+    font-family:'IBM Plex Mono',monospace;
+    background:var(--brass);color:var(--ink);border:none;border-radius:6px;
+    padding:14px 20px;font-size:15px;font-weight:600;cursor:pointer;
+    transition:background .15s ease;width:100%;
+  }
+  .install-btn:hover{background:var(--brass-bright);}
+  .notice{
+    display:block;font-size:13px;line-height:1.6;padding:12px 14px;border-radius:8px;
+    background:rgba(217,97,79,.12);border:1px solid rgba(217,97,79,.4);color:#f2b3a8;
+  }
+  .hint{font-size:13px;color:var(--text-muted);margin-top:14px;}
+
+  .steps ol{color:var(--text-muted);font-size:14px;line-height:1.9;padding-left:20px;margin:0;}
+  .steps li::marker{color:var(--brass);font-family:'IBM Plex Mono',monospace;}
+
+  footer{
+    margin-top:44px;display:flex;gap:10px;justify-content:center;align-items:center;
+    font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--text-muted);
+  }
+
+  esp-web-install-button{
+    --esp-tools-button-color: var(--brass);
+    --esp-tools-button-text-color: var(--ink);
+    --esp-tools-button-border-radius: 6px;
+    display:block;
+  }
+</style>
+</head>
+<body>
+
+  <p class="eyebrow">OK1CDJ / M5PTT</p>
+
+  <header class="hero">
+    <h1>Install M5PTT firmware</h1>
+    <p class="lede">PTT and CW-macro companion for SmartSDR, built on a $7.50 ESP32-S3 board. Flash it straight from this page &mdash; no IDE, no drivers.</p>
+    <div class="badges">
+      <span class="badge">M5Stack AtomS3 Lite</span>
+      <span class="badge">ESP32-S3</span>
+      <span class="badge" id="fw-version">firmware &mdash;</span>
+    </div>
+    <p style="margin:0 0 4px;"><a href="manual.html">Read the user manual &rarr;</a></p>
+  </header>
+
+  <div class="morse-wrap"><div id="morse-mount"></div></div>
+  <p class="morse-caption" id="morse-caption" aria-hidden="true"></p>
+
+  <main class="grid">
+    <section class="panel checklist">
+      <h2>Before you connect</h2>
+      <ul>
+        <li><strong>Browser</strong> &mdash; Chrome, Edge, or Brave on a desktop or laptop. Web Serial doesn't exist in Safari, and not at all on iPhone or iPad. There's no workaround for that.</li>
+        <li><strong>Cable</strong> &mdash; a USB-C cable that carries data, not a charge-only one.</li>
+        <li><strong>Board</strong> &mdash; M5Stack AtomS3 Lite.</li>
+        <li><strong>Bootloader mode</strong> &mdash; hold the side button, plug in the cable, keep holding for about 2 seconds after it powers up. AtomS3 Lite has no auto-reset circuit, so this manual step is needed every time you flash.</li>
+      </ul>
+    </section>
+
+    <section class="panel install">
+      <h2>Connect &amp; flash</h2>
+      <esp-web-install-button manifest="manifest.json">
+        <button slot="activate" class="install-btn">Connect device</button>
+        <span slot="unsupported" class="notice">
+          This browser can't flash over USB. Open this page in Chrome, Edge, or Brave on a computer instead.
+        </span>
+        <span slot="not-allowed" class="notice">
+          This page needs to be loaded over HTTPS for the browser to allow a USB connection.
+        </span>
+      </esp-web-install-button>
+      <p class="hint">Still holding the button? Click connect, choose the matching serial port from the browser prompt, then let go.</p>
+    </section>
+  </main>
+
+  <section class="panel steps">
+    <h2>Getting into bootloader mode</h2>
+    <ol>
+      <li>Unplug the AtomS3 Lite.</li>
+      <li>Press and hold the button on top.</li>
+      <li>Plug in the USB-C cable while still holding.</li>
+      <li>Keep holding for about 2 seconds, then release.</li>
+      <li>Click &ldquo;Connect device&rdquo; above and pick the port.</li>
+    </ol>
+  </section>
+
+  <footer>
+    <a href="manual.html">User manual</a>
+    <span>&middot;</span>
+    <a href="https://github.com/ok1cdj/M5PTT">Source on GitHub</a>
+    <span>&middot;</span>
+    <span>OK1CDJ</span>
+  </footer>
+
+  <script type="module" src="https://unpkg.com/esp-web-tools@10/dist/web/install-button.js?module"></script>
+  <script>
+  (function(){
+    var MORSE = {
+      A:'.-',B:'-...',C:'-.-.',D:'-..',E:'.',F:'..-.',G:'--.',H:'....',I:'..',J:'.---',
+      K:'-.-',L:'.-..',M:'--',N:'-.',O:'---',P:'.--.',Q:'--.-',R:'.-.',S:'...',T:'-',
+      U:'..-',V:'...-',W:'.--',X:'-..-',Y:'-.--',Z:'--..',
+      '0':'-----','1':'.----','2':'..---','3':'...--','4':'....-',
+      '5':'.....','6':'-....','7':'--...','8':'---..','9':'----.'
+    };
+
+    function tokens(str){
+      var out = [];
+      var chars = str.toUpperCase().split('');
+      chars.forEach(function(ch, i){
+        if(ch === ' '){ out.push({on:false,w:7}); return; }
+        var code = MORSE[ch];
+        if(!code) return;
+        code.split('').forEach(function(sym, j){
+          out.push({on:true, w: sym === '.' ? 1 : 3});
+          if(j < code.length - 1) out.push({on:false, w:1});
+        });
+        if(i < chars.length - 1 && chars[i+1] !== ' ') out.push({on:false, w:3});
+      });
+      return out;
+    }
+
+    function codeString(str){
+      return str.toUpperCase().split('').map(function(ch){ return MORSE[ch] || ''; }).join('  ');
+    }
+
+    function buildSVG(str){
+      var unit = 10, barH = 22;
+      var seq = tokens(str);
+      var x = 0, rects = '';
+      seq.forEach(function(t){
+        var w = t.w * unit;
+        if(t.on){
+          rects += '<rect x="' + x + '" y="0" width="' + (w - 2) + '" height="' + barH + '" rx="3" fill="var(--brass, #c98a3c)"/>';
+        }
+        x += w;
+      });
+      var total = x;
+      var reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      var sweep = reduced ? '' :
+        '<rect x="0" y="0" width="2" height="' + barH + '" fill="var(--cyan, #5fd0c9)">' +
+          '<animate attributeName="x" values="0;' + total + ';0" keyTimes="0;0.5;1" dur="6s" repeatCount="indefinite"/>' +
+        '</rect>';
+      return '<svg viewBox="0 0 ' + total + ' ' + barH + '" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Morse code for M5PTT">' + rects + sweep + '</svg>';
+    }
+
+    var mount = document.getElementById('morse-mount');
+    if(mount) mount.innerHTML = buildSVG('M5PTT');
+
+    var cap = document.getElementById('morse-caption');
+    if(cap) cap.textContent = codeString('M5PTT');
+
+    fetch('manifest.json').then(function(r){ return r.json(); }).then(function(m){
+      var el = document.getElementById('fw-version');
+      if(el && m.version) el.textContent = 'firmware v' + m.version;
+    }).catch(function(){
+      var el = document.getElementById('fw-version');
+      if(el) el.textContent = 'version unknown';
+    });
+  })();
+  </script>
+
+</body>
+</html>

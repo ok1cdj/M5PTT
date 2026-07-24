@@ -1,0 +1,12 @@
+{
+  "name": "M5PTT",
+  "version": "0.0.0-dev",
+  "builds": [
+    {
+      "chipFamily": "ESP32-S3",
+      "parts": [
+        { "path": "firmware/firmware.factory.bin", "offset": 0 }
+      ]
+    }
+  ]
+}
