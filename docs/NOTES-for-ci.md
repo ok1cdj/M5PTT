@@ -5,19 +5,42 @@ over Web Serial using [ESP Web Tools](https://esphome.github.io/esp-web-tools/).
 Everything on the page is static except the firmware image and the version
 number, both produced by CI.
 
-## The pipeline
+## The pipeline (two workflows)
 
-`.github/workflows/deploy.yml` runs on every pushed tag matching `v*` (and can
-be run manually via *workflow_dispatch* for a test build). It:
+Firmware builds and page deploys are decoupled, because the firmware is stable
+while the page and manual change often. The firmware binary is handed off
+between them as a **GitHub Release asset**.
+
+**`.github/workflows/firmware.yml`** — runs only on a pushed tag `v*`:
 
 1. builds the firmware with `pio run -e atoms3-lite`;
-2. copies the single merged image
-   `.pio/build/atoms3-lite/firmware.factory.bin` into `firmware/`;
-3. stamps `manifest.json`'s `version` from the tag (`v1.2.3` -> `1.2.3`;
-   manual runs get `dev`);
-4. deploys `docs/` to GitHub Pages.
+2. attaches the merged image `firmware.factory.bin` to the GitHub Release for
+   that tag (creating the release if needed).
 
-No binaries are committed to the repo — they only exist in the Pages artifact.
+It does not touch Pages. Run it only for real firmware releases.
+
+**`.github/workflows/pages.yml`** — deploys `docs/` to GitHub Pages. Triggers:
+
+- a `push` to `main` touching `docs/**` (edit the page or manual, just push);
+- `workflow_dispatch` (manual button);
+- `workflow_run` after `firmware.yml` succeeds (so a release refreshes the page).
+
+It downloads `firmware.factory.bin` from the **latest** release, reads the
+version from that release tag (`v1.2.3` -> `1.2.3`), stamps it into
+`manifest.json`, and deploys `docs/` + `firmware/`.
+
+No binaries are committed to the repo — they live only as release assets and in
+the Pages artifact. All `pages.yml` triggers run in the default-branch context,
+so the `github-pages` environment's default-branch rule is enough (no `v*` tag
+protection rule needed).
+
+### First-time bootstrap
+
+`pages.yml` needs the latest release to actually carry a `firmware.factory.bin`
+asset. Tags created before this split (e.g. `v0.1.0` from the old single
+workflow) have no asset, so run `firmware.yml` once — re-push the tag
+(`git push -f origin v0.1.0`) or cut a new one — to attach the binary before the
+page deploy can succeed.
 
 ## Why one merged file, not four parts
 
