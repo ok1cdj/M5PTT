@@ -23,13 +23,14 @@ const int BUTTON_PIN     = 41;  // built-in button
 
 // MIDI notes (map these in SmartSDR's Mapping Editor, channel 1)
 #define PTT_NOTE       99   // voice PTT
-#define CW_MEM1_NOTE  100   // single click  -> CWX macro 1
-#define CW_MEM2_NOTE  101   // double click  -> CWX macro 2
-#define CW_MEM3_NOTE  102   // triple click  -> CWX macro 3
-#define CW_ABORT_NOTE 103   // long press    -> CWX stop/abort
+#define CW_MEM1_NOTE   95   // single click  -> CWX macro 1
+#define CW_MEM2_NOTE   96   // double click  -> CWX macro 2
+#define CW_MEM3_NOTE   97   // triple click  -> CWX macro 3
+#define CW_ABORT_NOTE  98   // long press    -> CWX stop/abort
 
 // CW-mode click timing
 const unsigned long CLICK_WINDOW  = 350;  // ms after last release to settle count
+const unsigned long CW_PULSE_MS   = 100;  // note-on -> note-off hold (host ignores 0 ms pulses)
 const unsigned long LONG_PRESS_MS = 600;  // ms held -> abort
 const unsigned long MORSE_UNIT    = 120;  // ms per Morse dit
 
@@ -162,9 +163,11 @@ void pollUsbConnection() {
 void sendMidiPulse(uint8_t note) {
     if (usbActive) {
         USBMIDI.sendNoteOn(note, 127, 1);
+        delay(CW_PULSE_MS);
         USBMIDI.sendNoteOff(note, 0, 1);
     } else {
         MIDI.sendNoteOn(note, 127, 1);
+        delay(CW_PULSE_MS);
         MIDI.sendNoteOff(note, 0, 1);
     }
 }

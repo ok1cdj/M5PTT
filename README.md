@@ -37,10 +37,10 @@ All actions are momentary note pulses; map them in SmartSDR's Mapping Editor.
 | Action | Note | Map to |
 |---|---|---|
 | Voice PTT | 99 | PTT (Note On press / Note Off release) |
-| CW single click | 100 | CWX macro 1 |
-| CW double click | 101 | CWX macro 2 |
-| CW triple click | 102 | CWX macro 3 |
-| CW long press | 103 | CWX stop / abort |
+| CW single click | 95 | CWX macro 1 |
+| CW double click | 96 | CWX macro 2 |
+| CW triple click | 97 | CWX macro 3 |
+| CW long press | 98 | CWX stop / abort |
 
 Single-click resolves after a ~350 ms window (needed to distinguish double/triple
 click); a long press (~600 ms) fires the abort note.

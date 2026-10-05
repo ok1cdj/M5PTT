@@ -173,10 +173,10 @@ The device sends standard **MIDI notes on channel 1**. Open SmartSDR's
 | Action | MIDI note | Map to |
 |---|---|---|
 | Voice PTT | **99** | PTT (keys on note-on, unkeys on note-off) |
-| CW single click | **100** | CWX macro 1 |
-| CW double click | **101** | CWX macro 2 |
-| CW triple click | **102** | CWX macro 3 |
-| CW long press | **103** | CWX stop / abort |
+| CW single click | **95** | CWX macro 1 |
+| CW double click | **96** | CWX macro 2 |
+| CW triple click | **97** | CWX macro 3 |
+| CW long press | **98** | CWX stop / abort |
 
 You only need to map the notes for the mode(s) you actually use. PTT (note 99)
 is sent as a sustained press/release; the CW notes are short momentary pulses.
@@ -199,7 +199,7 @@ see it, unplug and re-power from a single source.
 
 **Nothing happens when I press the button in CW mode.**
 Remember there's a brief counting pause after your last click before the memory
-fires. Also confirm the notes (100–103) are mapped in SmartSDR and that you're
+fires. Also confirm the notes (95–98) are mapped in SmartSDR and that you're
 in CW mode (magenta LED, "R" flash at boot).
 
 **It's in the wrong mode.**
@@ -228,11 +228,11 @@ VOICE MODE
   Footswitch or button → hold = transmit (LED red)
 
 CW MODE (top button only)
-  1 click  → memory 1     (note 100)
-  2 clicks → memory 2     (note 101)
-  3 clicks → memory 3     (note 102)
-  hold ½s  → stop/abort   (note 103)
+  1 click  → memory 1     (note 95)
+  2 clicks → memory 2     (note 96)
+  3 clicks → memory 3     (note 97)
+  hold ½s  → stop/abort   (note 98)
 
 MIDI NOTES (channel 1) — map in SmartSDR Mapping Editor
-  99 PTT · 100/101/102 CWX macros 1/2/3 · 103 CWX stop
+  99 PTT · 95/96/97 CWX macros 1/2/3 · 98 CWX stop
 ```
